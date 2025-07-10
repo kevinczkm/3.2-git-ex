@@ -11,8 +11,17 @@ terraform {
   }
 }
 
+data "aws_caller_identity" "current" {}
+
+# locals {
+#   name_prefix = "split("/", "${data.aws_caller_identity.current.arn}")[1]}"
+# }
+
+locals {
+  name_prefix = split("/", data.aws_caller_identity.current.arn)[1]
+}
 
 
 resource "aws_s3_bucket" "s3_tf" {
-  bucket_prefix =  "kvin" # Set your bucket name here
+  bucket_prefix = lower("${local.name_prefix}-sctp-bkt")
 }
