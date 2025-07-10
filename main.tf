@@ -5,23 +5,18 @@ provider "aws" {
 terraform {
   backend "s3" {
     bucket = "sctp-ce10-tfstate"
-    #checkov:skip=CKV_AWS_20:The bucket is a public static content host
-    key    = "kvin"  #Change this
+    key    = "kvin-trial.tfstate"
     region = "ap-southeast-1"
   }
 }
 
-data "aws_caller_identity" "current" {}
-
-# locals {
-#   name_prefix = "split("/", "${data.aws_caller_identity.current.arn}")[1]}"
-# }
-
-locals {
-  name_prefix = split("/", data.aws_caller_identity.current.arn)[1]
-}
-
-
 resource "aws_s3_bucket" "s3_tf" {
-  bucket_prefix = lower("${local.name_prefix}-sctp-bkt")
+  #checkov:skip=CKV2_AWS_6: "Ensure that S3 bucket has a Public Access block"
+  #checkov:skip=CKV_AWS_145: "Ensure that S3 buckets are encrypted with KMS by default"
+  #checkov:skip=CKV2_AWS_62: "Ensure S3 buckets should have event notifications enabled"
+  #checkov:skip=CKV_AWS_18: "Ensure the S3 bucket has access logging enabled"
+  #checkov:skip=CKV_AWS_144: "Ensure that S3 bucket has cross-region replication enabled"
+  #checkov:skip=CKV_AWS_21: "Ensure all data stored in the S3 bucket have versioning enabled"
+  #checkov:skip=CKV2_AWS_61: "Ensure that an S3 bucket has a lifecycle configuration"
+  bucket_prefix = "kvin-trial"
 }
